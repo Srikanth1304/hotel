@@ -12,6 +12,8 @@ const Menu=require('./models/Menu');
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
+require('dotenv').config();
+
 app.get('/', (req, res) => {
     res.send('Nimbupani')
 });
@@ -48,7 +50,8 @@ const menu=require('./routes/menu');
 app.use('/menu',menu);
 
 
+const PORT=process.env.PORT||3000;
 
-app.listen(3000,() => {
+app.listen(PORT,() => {
     console.log('Server is running on port 3000');
 });
