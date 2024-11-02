@@ -12,9 +12,22 @@ const Menu=require('./models/Menu');
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
+//Middleware logging 
+const logTime=(req,res,next) => {
+    console.log(`Request received at ${new Date().toLocaleString()} to the url ${req.originalUrl}`);
+    next();
+}
+
+app.use(logTime); // for entire requests 
+
+
 require('dotenv').config();
 
-app.get('/', (req, res) => {
+
+
+
+
+app.get('/',logTime, (req, res) => {
     res.send('Nimbupani')
 });
 

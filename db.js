@@ -5,8 +5,8 @@ require('dotenv').config();
 
 
 // step2: Defining database url
-//const mongoURL="mongodb://localhost:27017/hotels";
-const mongoURL = process.env.DB_URL;
+const mongoURL="mongodb://localhost:27017/hotels";
+// const mongoURL = process.env.DB_URL;
 //.env module is to manage sensitive info that relates to security
 
 // step3: connect
