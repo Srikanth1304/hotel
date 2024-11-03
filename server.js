@@ -26,10 +26,43 @@ require('dotenv').config();
 
 
 
+//Authuntion middleware
+const passport= require('passport');
+const localStrategy= require('passport-local').Strategy; //it validate username and password
 
-app.get('/',logTime, (req, res) => {
+passport.use(new localStrategy(async (USERNAME,pwd,done)=>{
+    try{
+        const user=await Person.findOne({username:USERNAME});
+        if(!user){
+            return done(null,false,{message:"user not found"});
+        }
+        const isPasswd =user.password===pwd ? true : false;
+        if(isPasswd){
+            return done(null,user);
+        }
+        if(!isPasswd){
+            return done(null,false,{message:"Invalid password"});
+        }
+
+    }catch(err){
+        console.log(err);
+        return done(err);
+    }
+
+    
+}));
+
+
+
+
+
+// app.get('/',logTime, (req, res) => {
+//     res.send('Nimbupani')
+// });
+app.get('/',passport.authenticate('local',{session:false}), (req, res) => {
     res.send('Nimbupani')
 });
+
 
 // app.post('/', (req, res) => {
 //     const data=req.body;
