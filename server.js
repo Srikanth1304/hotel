@@ -26,31 +26,8 @@ require('dotenv').config();
 
 
 
-//Authuntion middleware
-const passport= require('passport');
-const localStrategy= require('passport-local').Strategy; //it validate username and password
 
-passport.use(new localStrategy(async (USERNAME,pwd,done)=>{
-    try{
-        const user=await Person.findOne({username:USERNAME});
-        if(!user){
-            return done(null,false,{message:"user not found"});
-        }
-        const isPasswd =user.password===pwd ? true : false;
-        if(isPasswd){
-            return done(null,user);
-        }
-        if(!isPasswd){
-            return done(null,false,{message:"Invalid password"});
-        }
 
-    }catch(err){
-        console.log(err);
-        return done(err);
-    }
-
-    
-}));
 
 
 
@@ -59,7 +36,7 @@ passport.use(new localStrategy(async (USERNAME,pwd,done)=>{
 // app.get('/',logTime, (req, res) => {
 //     res.send('Nimbupani')
 // });
-app.get('/',passport.authenticate('local',{session:false}), (req, res) => {
+app.get('/', (req, res) => {
     res.send('Nimbupani')
 });
 
@@ -84,16 +61,17 @@ app.get('/',passport.authenticate('local',{session:false}), (req, res) => {
 
 
 
-
-
-
+//Authuntion middleware
+const passport= require('./auth');
+app.use(passport.initialize());
+const authentication=passport.authenticate('local',{session:false})
 
 
 const person=require('./routes/person');
-app.use('/person',person);
+app.use('/person',authentication,person);
 
 const menu=require('./routes/menu');
-app.use('/menu',menu);
+app.use('/menu',authentication,menu);
 
 
 const PORT=process.env.PORT||3000;
