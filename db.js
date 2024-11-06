@@ -1,5 +1,6 @@
 // step1: Mongoose is a driver that acts as bridge of communication between Mongo db and Node js
 const mongoose=require('mongoose'); 
+const bcrypt=require('bcrypt');
 
 require('dotenv').config();
 
@@ -29,6 +30,8 @@ db.on('connected',() => {
 db.on('disconnected',() => {
     console.log('Disconnected from MongoDB');
 })
+
+
 
 
 // Step6: Export the db for use in other files

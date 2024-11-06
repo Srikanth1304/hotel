@@ -1,27 +1,23 @@
 const passport = require('passport');
-const localStrategy= require('passport-local').Strategy; //it validate username and password
-const Person= require('./models/Person');
+const LocalStrategy = require('passport-local').Strategy; // Corrected capitalization
+const Person = require('./models/Person');
 
-passport.use(new localStrategy(async (USERNAME,pwd,done)=>{
-    try{
-        const user=await Person.findOne({username:USERNAME});
-        if(!user){
-            return done(null,false,{message:"user not found"});
-        }
-        const isPasswd =user.password===pwd ? true : false;
-        if(isPasswd){
-            return done(null,user);
-        }
-        if(!isPasswd){
-            return done(null,false,{message:"Invalid password"});
+passport.use(new LocalStrategy(async (USERNAME, pwd, done) => {
+    try {
+        const user = await Person.findOne({ username: USERNAME });
+        if (!user) {
+            return done(null, false, { message: "User not found" }); // User does not exist
         }
 
-    }catch(err){
-        console.log(err);
-        return done(err);
+        const isPasswd = await user.comparePassword(pwd); // Compare passwords
+        if (isPasswd) {
+            return done(null, user); // Password matches
+        } else {
+            return done(null, false, { message: "Invalid password" }); // Password does not match
+        }
+    } catch (err) {
+        return done(err); // Handle errors
     }
-
-    
 }));
 
-module.exports =passport;
+module.exports = passport;
